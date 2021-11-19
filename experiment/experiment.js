@@ -43,21 +43,12 @@ function permute(input) {
 disease_keylist = [88, 89];
 disease_keylist = jsPsych.randomization.shuffle(disease_keylist);
 
-// fixation cross
-const fixation = {
-  type: 'html-keyboard-response',
-  stimulus: '<p style = "font-size:60px">+',
-  trial_duration: 1000,
-  response_ends_trial: false,
-  choices: jsPsych.NO_KEYS,
-};
-
 // inter-trial interval
 
 const intertrial = {
   type: 'html-keyboard-response',
   stimulus: '',
-  trial_duration: 1000,
+  trial_duration: 500,
   response_ends_trial: false,
   choices: jsPsych.NO_KEYS,
 };
@@ -170,6 +161,117 @@ const consent = {
   check_fn: checkConsent,
 };
 
+
+/* ******************************************
+* Create adjective and list
+******************************************* */
+
+// taken from https://github.com/aruljohn/popular-baby-names
+
+let girls = ['Emma',
+  'Olivia',
+  'Ava',
+  'Isabella',
+  'Sophia',
+  'Charlotte',
+  'Mia',
+  'Amelia',
+  'Harper',
+  'Evelyn',
+  'Abigail',
+  'Emily',
+  'Elizabeth',
+  'Mila',
+  'Ella',
+  'Avery',
+  'Sofia',
+  'Camila',
+  'Aria',
+  'Scarlett',
+  'Victoria',
+  'Madison',
+  'Luna',
+  'Grace',
+  'Chloe',
+  'Penelope',
+  'Layla',
+  'Riley',
+  'Zoey',
+  'Nora',
+  'Lily',
+  'Eleanor',
+  'Hannah',
+  'Lillian',
+  'Addison',
+  'Aubrey',
+  'Ellie',
+  'Stella',
+  'Natalie',
+  'Zoe',
+  'Leah',
+  'Hazel',
+  'Violet',
+  'Aurora',
+  'Savannah',
+  'Audrey',
+  'Brooklyn',
+  'Bella',
+  'Claire',
+  'Skylar']
+
+let boys = ['Liam',
+  'Noah',
+  'William',
+  'James',
+  'Oliver',
+  'Benjamin',
+  'Elijah',
+  'Lucas',
+  'Mason',
+  'Logan',
+  'Alexander',
+  'Ethan',
+  'Jacob',
+  'Michael',
+  'Daniel',
+  'Henry',
+  'Jackson',
+  'Sebastian',
+  'Aiden',
+  'Matthew',
+  'Samuel',
+  'David',
+  'Joseph',
+  'Carter',
+  'Owen',
+  'Wyatt',
+  'John',
+  'Jack',
+  'Luke',
+  'Jayden',
+  'Dylan',
+  'Grayson',
+  'Levi',
+  'Isaac',
+  'Gabriel',
+  'Julian',
+  'Mateo',
+  'Anthony',
+  'Jaxon',
+  'Lincoln',
+  'Joshua',
+  'Christopher',
+  'Andrew',
+  'Theodore',
+  'Caleb',
+  'Ryan',
+  'Asher',
+  'Nathan',
+  'Thomas',
+  'Leo']
+
+const names = jsPsych.randomization.shuffle(girls.concat(boys).flat());
+
 /* Create abstract design for both training and test phases */
 
 const trainingItems = [['A', 'B'],
@@ -186,7 +288,7 @@ const testItems = [['A'], ['B'], ['C'], ['A'], ['B'], ['C'],
   ['C', 'B']];
 
 // create physical stimuli
-symptoms = ['dizzy', 'feverish', 'nauseous'];
+symptoms = ['fever', 'headache', 'rash'];
 symptoms = jsPsych.randomization.shuffle(symptoms);
 
 /* *******************************************
@@ -216,8 +318,8 @@ for (let i = 0; i < 6; i++) {
       jsPsych.randomization.shuffle(testItems));
 }
 
-// training matrix
-const trainingBlock = [];
+const trainingBlock = []; // training matrix
+let blk = 1; // block number
 
 for (var i = 0; i < trials.length; i++) {
   // set up individual features
@@ -233,12 +335,13 @@ for (var i = 0; i < trials.length; i++) {
   }
   trainingBlock.push({
     type: 'categorize-html',
-    stimulus: ['<p style = "line-height:1.5;font-size:60px"> People who are ' +
-            symptom1 + ' and ' + symptom2 + '<br>have disease ' +
+    stimulus: ['<p style = "line-height:1.5;font-size:60px">' +
+            names[Math.floor((Math.random() * 100))] + ' has ' +
+            symptom1 + ' and ' + symptom2 + '<br>which belongs to disease ' +
             String.fromCharCode(correct) + '.</p>'],
     choices: ['space', 'backspace', 'x', 'y'],
     prompt: '<div style="margin-bottom:10px"><p style = "font-size:24px">' +
-      'Press the key on a keyboard corresponding the the name of the disease' +
+      'Press space when you are ready.' +
       '</p></div>',
     data: {
       symptom1: trials[i][0],
@@ -248,15 +351,16 @@ for (var i = 0; i < trials.length; i++) {
       category: category, // stimuli category
       phase: 'training',
       trial: i + 1,
-      include: true
+      include: true,
+      block: blk,
     },
     key_answer: correct,
     show_stim_with_feedback: false,
     show_feedback_on_timeout: false,
     correct_text: "",
     incorrect_text: "",
-    feedback_duration: 1000,
-    trial_duration: 10000,
+    feedback_duration: 500,
+    trial_duration: 5000,
     timeout_message: '<p style = "font-size:42px">Please respond faster!</p>',
     on_finish: function(data) {
       // decode responses into common or rare
@@ -274,21 +378,41 @@ for (var i = 0; i < trials.length; i++) {
     },
   });
   trainingBlock.push(intertrial); // intertrial interval
-  if (i > 1 && (i + 1) % 8 === 0) {
+  if (i > 1 && i < 8 && (i + 1) % 8 === 0) {
     trainingBlock.push({
       type: 'html-keyboard-response',
-      stimulus: '<p style = "font-size:24px;line-height:2;width:600px ">' +
+      stimulus: ['<p style = "font-size:24px;line-height:2;width:600px ">' +
             'You have completed a training block. <br>Take ' +
-            'a breath and press space when you are ready to continue.</p>',
+            'a breath and press space when you are ready to continue.</p>'],
       choices: ['space'],
     });
+    blk += 1;
+  }
+  if (i > 1 && i > 8 && (i + 1) % 8 === 0) {
+    trainingBlock.push({
+      type: 'html-keyboard-response',
+      stimulus: ['<p style = "font-size:24px;line-height:2;width:800px ">' +
+            'You have completed a training block. Now you have the ' +
+            'option to skip the remainder of the training and move straight ' +
+            'to the test phase. If you think you need some more time, you ' +
+            'can continue with training.<br><br>Take ' +
+            'a breath and press space if you wish to continue, or press ' +
+            'enter if you wish to skip to the test phase.</p>'],
+      choices: ['space', 'enter'],
+      on_finish: function(data) {
+          if (data.key_press === 13) {
+            jsPsych.endCurrentTimeline(); // end if backspace is pressed
+          }
+      }
+    });
+    blk += 1;
   }
 }
 
 // create training phase timeline element
 const trainingPhase = {
   type: 'html-keyboard-response',
-  timeline: [instructionTraining, trainingBlock],
+  timeline: trainingBlock,
   data: {
     keys: disease_keylist,
   },
@@ -359,7 +483,7 @@ for (let i = 0; i < testTrials.length; i++) {
 // create test phase timeline element
 const testPhase = {
   type: 'html-keyboard-response',
-  timeline: [instructionTest, testBlock],
+  timeline: testBlock,
   data: {
     keys: disease_keylist,
   },
