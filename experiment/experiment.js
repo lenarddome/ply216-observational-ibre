@@ -40,7 +40,7 @@ function permute(input) {
 
 // key codes: 88 is X and 89 is Y key
 // first element is always common, second element is always rare
-disease_keylist = [88, 89];
+disease_keylist = [68, 76];
 disease_keylist = jsPsych.randomization.shuffle(disease_keylist);
 
 // inter-trial interval
@@ -336,12 +336,12 @@ for (var i = 0; i < trials.length; i++) {
   trainingBlock.push({
     type: 'categorize-html',
     stimulus: ['<p style = "line-height:1.5;font-size:60px">' +
-            names[Math.floor((Math.random() * 100))] + ' has ' +
-            symptom1 + ' and ' + symptom2 + '<br>which belongs to disease ' +
+            names[Math.floor((Math.random() * 100))] + ' has a ' +
+            symptom1 + ' and a ' + symptom2 + '<br>which belongs to disease ' +
             String.fromCharCode(correct) + '.</p>'],
-    choices: ['space', 'backspace', 'x', 'y'],
+    choices: ['space', 'd', 'l'],
     prompt: '<div style="margin-bottom:10px"><p style = "font-size:24px">' +
-      'Press space when you are ready.' +
+      'Press space to see the next patient.' +
       '</p></div>',
     data: {
       symptom1: trials[i][0],
@@ -393,9 +393,9 @@ for (var i = 0; i < trials.length; i++) {
       type: 'html-keyboard-response',
       stimulus: ['<p style = "font-size:24px;line-height:2;width:800px ">' +
             'You have completed a training block. Now you have the ' +
-            'option to skip the remainder of the training and move straight ' +
+            'option to skip the rest of the training phase and move straight ' +
             'to the test phase. If you think you need some more time, you ' +
-            'can continue with training.<br><br>Take ' +
+            'can continue training and study more patients.<br><br>Take ' +
             'a breath and press space if you wish to continue, or press ' +
             'enter if you wish to skip to the test phase.</p>'],
       choices: ['space', 'enter'],
@@ -443,7 +443,7 @@ for (let i = 0; i < testTrials.length; i++) {
   testBlock.push({
     type: 'categorize-html',
     stimulus: stim,
-    choices: ['x', 'y'],
+    choices: ['d', 'l'],
     trial_duration: 5000,
     feedback_duration: 1000,
     show_stim_with_feedback: false,
@@ -452,7 +452,7 @@ for (let i = 0; i < testTrials.length; i++) {
     incorrect_text: '<p style="font-size:30px">Response recorded.</p>',
     timeout_message: '<p style="font-size:30px">Please respond faster!</p>',
     prompt: '<p style = "font-size:30px">' +
-      'Does the patient has disease X or disease Y?' +
+      'Does the patient has disease D or disease L?' +
       '</p>',
     data: {
       symptom1: code[0],

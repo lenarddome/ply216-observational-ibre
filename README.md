@@ -45,3 +45,13 @@ What is being worked on:
 
 1. Method.
 2. Submitting Ethics.
+
+### 2021-12-01
+
+Agenda:
+
+1. Check valence ratings for symptoms
+
+2. Test phase
+
+3. Ethics
