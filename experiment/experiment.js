@@ -40,7 +40,7 @@ function permute(input) {
 
 // key codes: 88 is X and 89 is Y key
 // first element is always common, second element is always rare
-disease_keylist = [68, 76];
+disease_keylist = [90, 76];
 disease_keylist = jsPsych.randomization.shuffle(disease_keylist);
 
 // inter-trial interval
@@ -57,33 +57,32 @@ const intertrial = {
 const instructionTraining = {
   type: 'html-keyboard-response',
   stimulus: ['<p style="display:inline-block;align:center;font-size:16pt;' +
-    'width:60%">' +
-    'You will now begin the first phase of the experiment. ' +
-    'You will be presented with a variety of different symptoms, and you ' +
-    'will be asked to decide whether they belong to Disease X or ' +
-    'Disease Y. If you think it is Disease X, press the \'X\' key. If you ' +
-    'think it is Disease Y, press the \'Y\' key. You will receive feedback ' +
-    'on whether you picked the right disease after every choice. ' +
-    '<br><br>You need to complete two consecutive errorless blocks of ' +
-    '8 trials to move on to the next phase.</p>' +
-    '<br>Press \'space\' to continue.'],
-  choices: ['space'],
+    'width:60%"> In this phase of the experiment you will be presented with' +
+    ' statements about patients showing various symptoms and the underlying' +
+    ' fictitious disease they have - either Disease Z or Disease L. There' +
+    ' will be 5 blocks and 40 patients overall. However, you will' +
+    ' be given the opportunity to skip this phase after the 16th patient ' +
+    ' at the end of the second block.' +
+    ' You will need to press the spacebar after you studied each statement.' +
+    ' You can study each statment for 10 seconds.' +
+    '</p><br>Press \'p\' to continue.'],
+  choices: ['p'],
 };
 
 // instructions for test phase
 const instructionTest= {
   type: 'html-keyboard-response',
   stimulus: ['<p style="display:inline-block;align:center;font-size:16pt;' +
-    'width:60%">'  +
+    'width:60%">' +
     'Well done on completing the first phase! Now, you will begin ' +
-    'the test phase. You will be required to do the same thing as ' +
-    'you did before, but without corrective feedback. ' +
-    'If you think the symptoms on the screen belong to Disease X, press ' +
-    '\'X\'. If you think the symptoms belong to Disease Y, press \'Y\'.<p>' +
-    '<p>This phase will have 6 blocks of 12 trials. You will have a chance' +
+    'the test phase. In this phase of the experiment you will be asked to ' +
+    'identify which disease you think the person presented has got. ' +
+    'If you think the symptoms on the screen belong to Disease Z, press ' +
+    '\'Z\'. If you think the symptoms belong to Disease L, press \'L\'.</p>' +
+    '<p>This phase will have 5 blocks of 24 patients. You will have a chance' +
     ' to rest between blocks.</p>' +
-    '<br>Press \'space\' to continue.'],
-  choices: ['space'],
+    '<br>Press \'p\' to continue.'],
+  choices: ['p'],
 };
 
 // welcome message
@@ -93,20 +92,20 @@ const welcome = {
         'Welcome to the Experiment! <br> Please press \'space\'.</p>',
   ],
   choices: ['space'],
-  // on_start: function(){
-  //  var pptID = jatos.urlQueryParameters.id;
-  //  jsPsych.data.addProperties({ppt: pptID, session: sessionCurrent});
-  // },
+  on_start: function() {
+    const pptID = jatos.urlQueryParameters.id;
+    jsPsych.data.addProperties({ppt: pptID, session: sessionCurrent});
+  },
 };
 
 // between block rest during test
 const testRest = {
   type: 'html-keyboard-response',
   stimulus: ['<p style = "font-size:24px;line-height:2;width:600px ">' +
-        'You have completed a block. Take ' +
-        'a breath and press space when you are ready to continue</p>',
+        'You have completed a block. Take a breath and press \'p\' ' +
+        'on the keyboard when you are ready to continue</p>',
   ],
-  choices: ['space'],
+  choices: ['p'],
 };
 
 // remind people to press EXIT EXPERIMTENT button at the end
@@ -117,8 +116,8 @@ const creditReminder = {
       'width:60%">In order to receive the allocated points after completing the experiment, ' +
       'you must read the debrief and click on the <strong> EXIT EXPERIMENT button</strong>.' +
       'Any point will be granted by redirecting you to the SONA website.' +
-    '<br><br> Press \'space\' to continue.'],
-  choices: ['space'],
+    '<br><br> Press \'p\' to continue.'],
+  choices: ['p'],
 };
 
 // debrief
@@ -126,13 +125,13 @@ const debrief = {
   type: 'external-html',
   url: 'assets/debrief.html',
   cont_btn: 'exit',
-//  on_start: function(){
-//    var results = jsPsych.data.get().filter({include:true}).csv();
-//    jatos.submitResultData(results);
-//    jatos.uploadResultFile(results, sessionCurrent + ".csv")
-//      .then(() => console.log("File was successfully uploaded"))
-//      .catch(() => console.log("File upload failed"));
-//    },
+  on_start: function() {
+    const results = jsPsych.data.get().filter({include: true}).csv();
+    jatos.submitResultData(results);
+    jatos.uploadResultFile(results, sessionCurrent + '.csv')
+        .then(() => console.log('File was successfully uploaded'))
+        .catch(() => console.log('File upload failed'));
+  },
 };
 
 // consent form
@@ -168,7 +167,7 @@ const consent = {
 
 // taken from https://github.com/aruljohn/popular-baby-names
 
-let girls = ['Emma',
+const girls = ['Emma',
   'Olivia',
   'Ava',
   'Isabella',
@@ -217,9 +216,9 @@ let girls = ['Emma',
   'Brooklyn',
   'Bella',
   'Claire',
-  'Skylar']
+  'Skylar'];
 
-let boys = ['Liam',
+const boys = ['Liam',
   'Noah',
   'William',
   'James',
@@ -268,7 +267,7 @@ let boys = ['Liam',
   'Asher',
   'Nathan',
   'Thomas',
-  'Leo']
+  'Leo'];
 
 const names = jsPsych.randomization.shuffle(girls.concat(boys).flat());
 
@@ -313,7 +312,7 @@ trials = trials.concat(jsPsych.randomization.shuffle(trainingCounter.flat()),
 
 
 // combine test blocks (randomize within blocks)
-for (let i = 0; i < 6; i++) {
+for (let i = 0; i < 10; i++) {
   testTrials = testTrials.concat(
       jsPsych.randomization.shuffle(testItems));
 }
@@ -339,7 +338,7 @@ for (var i = 0; i < trials.length; i++) {
             names[Math.floor((Math.random() * 100))] + ' has a ' +
             symptom1 + ' and a ' + symptom2 + '<br>which belongs to disease ' +
             String.fromCharCode(correct) + '.</p>'],
-    choices: ['space', 'd', 'l'],
+    choices: ['space', 'z', 'l'],
     prompt: '<div style="margin-bottom:10px"><p style = "font-size:24px">' +
       'Press space to see the next patient.' +
       '</p></div>',
@@ -357,8 +356,8 @@ for (var i = 0; i < trials.length; i++) {
     key_answer: correct,
     show_stim_with_feedback: false,
     show_feedback_on_timeout: false,
-    correct_text: "",
-    incorrect_text: "",
+    correct_text: '',
+    incorrect_text: '',
     feedback_duration: 500,
     trial_duration: 5000,
     timeout_message: '<p style = "font-size:42px">Please respond faster!</p>',
@@ -383,8 +382,8 @@ for (var i = 0; i < trials.length; i++) {
       type: 'html-keyboard-response',
       stimulus: ['<p style = "font-size:24px;line-height:2;width:600px ">' +
             'You have completed a training block. <br>Take ' +
-            'a breath and press space when you are ready to continue.</p>'],
-      choices: ['space'],
+            'a breath and press p when you are ready to continue.</p>'],
+      choices: ['p'],
     });
     blk += 1;
   }
@@ -396,14 +395,14 @@ for (var i = 0; i < trials.length; i++) {
             'option to skip the rest of the training phase and move straight ' +
             'to the test phase. If you think you need some more time, you ' +
             'can continue training and study more patients.<br><br>Take ' +
-            'a breath and press space if you wish to continue, or press ' +
+            'a breath and press p if you wish to continue, or press ' +
             'enter if you wish to skip to the test phase.</p>'],
-      choices: ['space', 'enter'],
+      choices: ['p', 'enter'],
       on_finish: function(data) {
-          if (data.key_press === 13) {
-            jsPsych.endCurrentTimeline(); // end if backspace is pressed
-          }
-      }
+        if (data.key_press === 13) {
+          jsPsych.endCurrentTimeline(); // end if backspace is pressed
+        }
+      },
     });
     blk += 1;
   }
@@ -431,20 +430,22 @@ for (let i = 0; i < testTrials.length; i++) {
     const symptom1 = symptoms[testTrials[i][0].charCodeAt(0) - 65];
     const symptom2 = symptoms[testTrials[i][1].charCodeAt(0) - 65];
     phstim = [symptom1, symptom2];
-    stim = ['<p style = "line-height:2;font-size:60px">' + symptom1 +
-              '<br>' + symptom2 + '</p>'];
+    stim = ['<p style = "line-height:2;font-size:60px">' +
+     names[Math.floor((Math.random() * 100))] + ' has <br>a ' + symptom1 +
+     ' and a ' + symptom2 + '</p>'];
     code = [testTrials[i][0], testTrials[i][1]];
   } else {
     phstim = symptoms[testTrials[i][0].charCodeAt(0) - 65];
-    stim = ['<p style = "font-size:60px">' +
-          symptoms[testTrials[i][0].charCodeAt(0) - 65]];
+    stim = ['<p style = "line-height:2;font-size:60px">' +
+      names[Math.floor((Math.random() * 100))] +
+      ' has <br>a ' + symptoms[testTrials[i][0].charCodeAt(0) - 65]];
     code = [testTrials[i][0], ''];
   }
   testBlock.push({
     type: 'categorize-html',
     stimulus: stim,
-    choices: ['d', 'l'],
-    trial_duration: 5000,
+    choices: ['z', 'l'],
+    trial_duration: 10000,
     feedback_duration: 1000,
     show_stim_with_feedback: false,
     key_answer: disease_keylist,
@@ -452,7 +453,7 @@ for (let i = 0; i < testTrials.length; i++) {
     incorrect_text: '<p style="font-size:30px">Response recorded.</p>',
     timeout_message: '<p style="font-size:30px">Please respond faster!</p>',
     prompt: '<p style = "font-size:30px">' +
-      'Does the patient has disease D or disease L?' +
+      'Does the patient has disease Z or disease L?' +
       '</p>',
     data: {
       symptom1: code[0],
@@ -475,7 +476,7 @@ for (let i = 0; i < testTrials.length; i++) {
   });
   testBlock.push(intertrial);
   // have a rest after each block
-  if (i > 1 && (i + 1) % 12 === 0) {
+  if (i > 1 && (i + 1) % 24 === 0) {
     testBlock.push(testRest);
   }
 }
