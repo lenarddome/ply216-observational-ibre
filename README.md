@@ -1,14 +1,19 @@
 # ply220
 
-active learning IBRE
+observational learning IBRE
 
-# Brainstorms
+## Brainstorms
 
-The high-level and student-friendly question is: are people biased or do we make them biased?
+The high-level and student-friendly question is: are people biased or do
+we make them biased?
 
 ## OBSERVATIONAL LEARNING
 
-In general, we think that the inverse base-rate effect arises from how you organize information (observed contingencies of events) in response to external events. In order to distinguish between categories, you try to identify category-specific features of the exemplars because you need to reduce error.
+In general, we think that the inverse base-rate effect arises
+from how you organize information (observed contingencies of events)
+in response to external events. In order to distinguish between categories,
+you try to identify category-specific features of the exemplars because
+you need to reduce error.
 
 Participants are allowed to terminate learning.
 
@@ -26,11 +31,14 @@ drives the effect.
 
 ## STUDENT MEETINGS
 
+Prediction: Without errors, people will be rational.
+
 ### 2021-11-11
 
 1. So what is the project?
 2. What have you done so far?
 3. Do you have a timeline?
+4. The things that I can help you with.
 
 December - ethics
 February - data collection
@@ -38,8 +46,6 @@ February - data collection
 3 month data analysis and writing
 
 May (5th) - Submissions
-
-4. The things that I can help you with.
 
 What is being worked on:
 
@@ -51,7 +57,15 @@ What is being worked on:
 Agenda:
 
 1. Check valence ratings for symptoms
-
 2. Test phase
-
 3. Ethics
+
+### 2022-02-03
+
+TODO: update instructions after ethics approval
+TODO: send you a link to the experiment
+
+1. transfer points to one person
+2. set up sona study
+3. give me redirect link
+4. pilot experiment
