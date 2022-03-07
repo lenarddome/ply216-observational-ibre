@@ -172,7 +172,8 @@ for (j in seq(5)) {
     ibre_out <- foreach(i = unique(ibre$ppt), .packages = export_packages,
                        .combine = "c", .options.snow = opts) %dopar% {
         tmp <- ibre[ppt == i & abresp == "rare", ]
-        out <- imacHuman(x = tmp, stimuli = as.character(stim))
+        out <- imacHuman(x = tmp, stimuli = as.character(stim),
+                         total = 20)
         out <- list(out)
         names(out) <- i
         out
