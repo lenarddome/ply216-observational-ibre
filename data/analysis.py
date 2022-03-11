@@ -54,6 +54,7 @@ best_out.hdi('Difference of means', 0.95)
 ## HDI interval falls above 0, so we observed the effect
 
 ## kruschke's method with pymc3
+## TODO: need a lot more info on these things below
 μ_m = test['prob'].mean()
 μ_s = test['prob'].std() * 2
 
@@ -111,3 +112,5 @@ plt.show()
 
 az.summary(trace, var_names=["difference of means", "difference of stds", "effect size"])
 ## HDI falls outside of 0, so we observed the effect
+
+## NOTE: https://pypi.org/project/autorank/ is able to calculate Kruschke's method with ROPE

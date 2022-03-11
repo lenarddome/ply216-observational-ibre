@@ -1,0 +1,81 @@
+---
+author: Lenard Dome
+title: LABORATORY REPORT PLY216
+subtitle: Observational learning implementation of the inverse base-rate effect
+output:
+    bookdown::pdf_document2:
+        latex_engine: xelatex
+        dev: cairo_pdf
+        toc: true
+        toc_depth: 3
+        number_sections: true
+        fig_caption: true
+lot: yes
+lof: yes
+bibliography: bibliography.bib
+biblio-style: apalike
+link-citations: true
+includes:
+        in_header: unixode.sty
+header-includes:
+        - \usepackage{booktabs}
+        - \usepackage{fontspec}
+        - \setmainfont{FreeSerif}
+---
+
+\newpage
+
+# METHOD
+
+## PROCEDURE
+
+\begin{table}[ht]
+    \caption{Abstract trial type during the training and test phase.}
+    \label{tab:abstim}
+    \centering
+    \begin{tabular}{l|lr} % text alignments 
+      \toprule
+      \textbf{Training (Relative Frequencies)} & \textbf{Test}& \\
+      \hline
+      $AB \to common_{1}$ (x 3) &  A, B, C, AB, AC,   & \\
+      $AC \to rare_{1}$   (x 1) &  BC,   & \\
+    \end{tabular}
+  \end{table}
+
+Participants were asked to learn about symptoms and diseases and then to make some judgements about new combinations of symptoms.
+Abstract stimuli for both training and test phases are in \ref{tab:abstim}
+In the first phase, participants saw descriptions of patients, such as the one below:
+
+> Janet has fever and nausea that belongs to Disease Z.
+
+They had 10 seconds to study these descriptions before moving on to the next trial.
+They were also allowed to move on from the current trial by pressing space.
+Overall, there were 40 patients uniformly distributed into 5 blocks of 8 patients, but participants did not have to complete all 5 blocks.
+After the second block, they were allowed to skip the rest of the learning phase and move on to the test phase.
+
+In the test phase, participants then saw only the symptoms and were asked to classify them into diseases by pressing Z for Disease Z and L for Disease L.
+They had 10 seconds to do this.
+
+## TRIAL STRUCTURE
+
+Training trials consisted of two components: a stimulus and an inter-trial interval.
+Test trials consisted of three components.
+
+## SOFTWARE
+
+* JSPSych 6.1
+* Jatos 3.6.1
+
+## ANALYSIS
+
+We observe IBRE, when $BC \to Rare > BC \to Common$.
+In plain words, we observe IBRE when participants sort the compound of uniquely predictive features into the rare category more often than into the common category.
+We tested this inequality by comparing the two groups of observations ($BC \to Rare$ vs $BC \to Common$) by Bayesian Parameter 
+Estimation as outlined by @kruschke2011doing and implemented in the R package `BEST` [@kruschke2021BEST].
+We used the default settings of `BESTmcmc` when comparing the two groups of observations.
+We defined the Region Of Practical Equivalence (ROPE) to be the interval of (-0.1, 0.1).
+If more than 75% of the posterior distribution of the differences falls outside of ROPE, we conclude that we have observed the inverse base-rate effect.
+
+# RESULTS
+
+
