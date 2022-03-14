@@ -56,11 +56,6 @@ After the second block, they were allowed to skip the rest of the learning phase
 In the test phase, participants then saw only the symptoms and were asked to classify them into diseases by pressing Z for Disease Z and L for Disease L.
 They had 10 seconds to do this.
 
-## TRIAL STRUCTURE
-
-Training trials consisted of two components: a stimulus and an inter-trial interval.
-Test trials consisted of three components.
-
 ## SOFTWARE
 
 * JSPSych 6.1
