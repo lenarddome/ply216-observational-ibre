@@ -13,7 +13,6 @@ rng = np.random.default_rng(seed=42)
 path = "raw"
 files = glob.glob(path + "/*.csv")
 
-
 # this is a bit dense but essentially it is a for loop where the looping
 # comes last and the commands first
 dta = pd.concat([pd.read_csv(f) for f in files])
@@ -50,8 +49,17 @@ best_out = best.analyze_two(bc_rare, bc_common)
 fig = best.plot_all(best_out)
 fig.show()
 
-best_out.hdi('Difference of means', 0.95)
-## HDI interval falls above 0, so we observed the effect
+
+## Calculate ROPE
+posterior = best_out.hdi('Difference of means', 0.95)
+posterior = np.asarray(posterior)
+unit = (posterior[1] - posterior[0]) / 100
+
+if posterior[0] > 0.10 :
+    print("100% of posterior is outside of ROPE.")
+else:
+    rope = (0.10 - posterior[0]) / unit
+    print(str(rope) + " of posterior is inside of ROPE.")
 
 ## kruschke's method with pymc3
 ## TODO: need a lot more info on these things below
