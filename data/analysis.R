@@ -39,14 +39,6 @@ dta <- as.data.table(dta)
 ## training accuracy
 dta[, blk := as.integer((trial - 1) / 8) + 1]
 
-## check how many people have fallen below 12
-
-train <- dta[phase == "training"]
-train[, acc := ifelse(correct == "FALSE", 0, 1)]
-train <- train[, .(prob = mean(acc),
-                   n = sum(acc), total = length(acc)),
-               by = .(ppt, abstim)]
-
 ## test phase
 tdta <- dta[phase == "test", .N, by = .(ppt, abstim, abresp)]
 tdta[, prob := N / 20]
@@ -197,40 +189,28 @@ stopImplicitCluster()
 
 ## frequency plots
 
-i1 <- match(level1, unique(level1))
+i1 <- match(HUMAN_1, unique(HUMAN_1))
 tbl1 <- table(i1)
 tbl1 <- data.table(tbl1)
 tbl1[, pattern := paste(stimuli[[2]], collapse = ", ")]
 
-i2 <- match(level2, unique(level2))
+i2 <- match(HUMAN_2, unique(HUMAN_2))
 tbl2 <- table(i2)
 tbl2 <- data.table(tbl2)
 tbl2[, pattern := paste(stimuli[[3]], collapse = ", ")]
 
-i4 <- match(level4, unique(level4))
-tbl4 <- table(i4)
-tbl4 <- data.table(tbl4)
-tbl4[, pattern := paste(stimuli[[5]], collapse = ", ")]
-
-i3 <- match(level3, unique(level3))
+i3 <- match(HUMAN_3, unique(HUMAN_3))
 tbl3 <- table(i3)
-most3 <- level3[as.integer(names(which(tbl3 == max(tbl3))))]
+most3 <- HUMAN_3[as.integer(names(which(tbl3 == max(tbl3))))]
 tbl3 <- data.table(tbl3)
 tbl3[, pattern := paste(stimuli[[4]], collapse = ", ")]
 
-## theoretically possible patterns for a strictly triangular matrix
-## where each cell can take up any value from a set of 3
-## x must be the number of rows in the strictly triangular matrix
-trimat_comb <- function(x) {
-    if (length(x) == 1) {
-        out <- 3^sum(1:(x - 1))
-    } else {
-        out <- sapply(x, function(foo) 3^sum(1:(foo - 1)))
-    }
-    return(out)
-}
+i4 <- match(HUMAN_4, unique(HUMAN_4))
+tbl4 <- table(i4)
+most4 <- HUMAN_4[as.integer(names(which(tbl4 == max(tbl4))))]
+tbl4 <- data.table(tbl4)
+tbl4[, pattern := paste(stimuli[[5]], collapse = ", ")]
 
-knitr::kable(data.table(stimuli, trimat_comb(c(2, 3, 4, 5, 7))))
 
 ## ggplot histogram
 freq_pat <- rbind(tbl1, tbl2, tbl3, tbl4, use.names = FALSE)
@@ -246,7 +226,7 @@ pfreq <- ggplot(freq_pat, aes(x = as.numeric(i1), y = N, fill = pattern)) +
 ggsave(pfreq, filename = "freq.pdf", width = 12)
 
 ## undirected graph
-dat <- melt(data.table(most3[[1]], keep.rownames = TRUE))
+dat <- melt(data.table(most4[[1]], keep.rownames = TRUE))
 colnames(dat) <- c("from", "to", "weight")
 adj_matrix <- graph.data.frame(dat[!is.na(weight)], directed = TRUE)
 
@@ -260,9 +240,9 @@ colors[colors == -1] <- palette[2]
 
 ## very clumsy way of sorting vertex names
 ## convert it to factors then to numeric
-sorting <- as.numeric(as.factor(level3_order[ppt == names(most3)]$stim))
+sorting <- as.numeric(as.factor(HUMAN_4_order[ppt == names(most4)]$stim))
 ## sort based on numeric first
-order <- level3_order[ppt == names(most3)][sorting]
+order <- HUMAN_4_order[ppt == names(most4)][sorting]
 ## order names according to successes and then convert factors to numeric
 lay <- as.numeric(as.factor(order$stim[order(as.numeric(order$success))]))
 CairoPDF("plot.pdf", 10, 10)
