@@ -43,6 +43,14 @@ dta[, blk := as.integer((trial - 1) / 8) + 1]
 tdta <- dta[phase == "test", .N, by = .(ppt, abstim, abresp)]
 tdta[, prob := N / 20]
 
+ggplot(tdta, aes(x = abresp, y = prob, fill = abstim)) +
+  geom_violin() +
+  geom_jitter(alpha = 0.25) +
+  stat_boxplot(aes(fill = NULL), geom = "boxplot", width = 0.1) +
+  stat_boxplot(aes(fill = NULL), geom = "errorbar", width = 0.2) +
+  facet_wrap(. ~ abstim) +
+  theme_clean()
+
 group <- tdta[abresp != "none",
               list(prob = sum(prob) / length(unique(dta$ppt))),
               by = .(abstim, abresp)][order(abstim, abresp)]
@@ -114,20 +122,13 @@ ibre$abstim <- factor(ibre$abstim)
 
 colnames(ibre) <- c("ppt", "stim", "abresp", "success", "prob", "total")
 
-rare_conversion <- train[abstim == "AB", total - n]
-rare_probabilities <- train[abstim == "AB", 1 - prob]
-train[abstim == "AB"]$n <- rare_conversion
-train[abstim == "AB"]$prob <- rare_probabilities
-train[, stim := ifelse(abstim == "AB", "#AB", "#AC")]
-train$abresp <- "rare"
-
 stimuli <- list(c("BC"),
                 c("BC", "A"),
                 c("BC", "B", "C"),
                 c("BC", "B", "C", "A"),
                 c("BC", "B", "C", "A", "AB", "AC"))
 
-levels <- c("HUMAN_1", "HUMAN_2", "HUMAN_3", "HUMAN_4", "HUMAN_6")
+levels <- c("HUMAN_1", "HUMAN_2", "HUMAN_3", "HUMAN_4")
 
 output <- NULL
 
@@ -140,7 +141,7 @@ registerDoSNOW(cl)
 
 export_packages <- c("data.table", "BayesianFirstAid")
 
-for (j in seq(5)) {
+for (j in seq(4)) {
     ## print starting message
     print(
           paste("\n", Sys.time(), paste(stimuli[[j]], collapse = ", "),
