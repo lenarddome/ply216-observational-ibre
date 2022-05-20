@@ -8,6 +8,8 @@ library(ggplot2)
 library(ggthemes)
 source("ply207utilities.R")
 
+## TODO: BC and CB
+
 ## import data
 
 fname <- list.files("raw", "*.csv", full.names = TRUE)
@@ -43,14 +45,6 @@ dta[, blk := as.integer((trial - 1) / 8) + 1]
 tdta <- dta[phase == "test", .N, by = .(ppt, abstim, abresp)]
 tdta[, prob := N / 20]
 
-ggplot(tdta, aes(x = abresp, y = prob, fill = abstim)) +
-  geom_violin() +
-  geom_jitter(alpha = 0.25) +
-  stat_boxplot(aes(fill = NULL), geom = "boxplot", width = 0.1) +
-  stat_boxplot(aes(fill = NULL), geom = "errorbar", width = 0.2) +
-  facet_wrap(. ~ abstim) +
-  theme_clean()
-
 group <- tdta[abresp != "none",
               list(prob = sum(prob) / length(unique(dta$ppt))),
               by = .(abstim, abresp)][order(abstim, abresp)]
@@ -70,13 +64,13 @@ bc <- merge(x = bc[abresp == "rare", c(1, 2, 5)],
 bc[is.na(bc)] <- 0
 
 # find posterior distribution for the difference
-bc_bayes <- BESTmcmc(y1 = bc$prob.rare,
-                     y2 = bc$prob.common)
+bc_bayes <- BESTmcmc(y1 = bc$prob.rare)
 
 # check summary table for mcmc
-bayes_table <- summary(bc_bayes, ROPEm = c(-0.1, 0.1), ROPEsd = c(-0.15, 0.15))
+bayes_table <- summary(bc_bayes, ROPEm = c(0.4, 0.6), ROPEsd = c(0.15, 0.15))
 knitr::kable(data.frame(bayes_table)[],
              format = "markdown", digits = 2)
+plot(bc_bayes, ROPE = c(0.4, 0.6), compVal = 0.4)
 
 # predictive cues are judged faster
 # ambiguous stimuli takes longer to sort on average
