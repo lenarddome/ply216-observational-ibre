@@ -1,9 +1,5 @@
 library(data.table)
 library(BayesFactor)
-library(BayesianFirstAid)
-library(doSNOW)
-library(doParallel)
-library(igraph)
 library(ggplot2)
 library(ggthemes)
 library(ggdist)
@@ -45,10 +41,10 @@ dta[, blk := as.integer((trial - 1) / 8) + 1]
 tdta <- dta[phase == "test", .N, by = .(ppt, abstim, abresp)]
 tdta[, prob := N / 20]
 
-inclusion_memory_common <- tdta[abstim == 'AB' & abresp == 'common', prob >= 0.60, by = ppt]
+inclusion_memory_common <- tdta[abstim == 'AB' & abresp == 'common', prob >= 0.75, by = ppt]
 include <- inclusion_memory_common[V1 == TRUE]$ppt
 
-inclusion_memory_rare <- tdta[abstim == 'AC' & abresp == 'rare', prob >= 0.60, by = ppt]
+inclusion_memory_rare <- tdta[abstim == 'AC' & abresp == 'rare', prob >= 0.75, by = ppt]
 include2 <- inclusion_memory_rare[V1 == TRUE]$ppt
 
 inclusion_memory <- include[include %in% include2]
@@ -59,10 +55,10 @@ group <- tdta[abresp != "none" & ppt %in% inclusion_memory,
               by = .(abstim, abresp)][order(abstim, abresp)]
 colnames(group) <-  c("stim", "resp", "prob")
 knitr::kable(dcast(formula = stim ~ resp, data = data.table(group)),
-             format = "pipe")
+             format = "latex", digits = 2)
 
 ## IBRE
-bc <- tdta[abstim == "BC" & abresp != "none"]
+bc <- tdta[abstim == "BC" & abresp != "none" & ppt %in% inclusion_memory]
 # long to wide conversion
 bc <- merge(x = bc[abresp == "rare", c(1, 2, 5)],
             y = bc[abresp == "common", c(1, 2, 5)],
